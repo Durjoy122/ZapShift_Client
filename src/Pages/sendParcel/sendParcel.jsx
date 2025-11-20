@@ -1,17 +1,21 @@
 import React from 'react';
 import { useForm , useWatch } from 'react-hook-form';
 import { useLoaderData } from 'react-router';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
 import Swal from 'sweetalert2';
+import useAuth from '../../hooks/useAuth';
 
 const sendParcel = () => {
     const {
         register,
         handleSubmit,
         control,
-        formState: { errors } 
+        //formState: { errors } 
     } = useForm();
 
+    const { user } = useAuth();
     const serviceCenters = useLoaderData();
+    const axiosSecure = useAxiosSecure();
 
     const regionsDuplicate = serviceCenters.map(c => c.region);
 
@@ -55,12 +59,11 @@ const sendParcel = () => {
             cancelButtonColor: "#d33",
             confirmButtonText: "I agree!"
         }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: "Ok",
-                    text: "Your has placed by you to serve.",
-                    icon: "success"
-                });
+            if(result.isConfirmed) {
+                axiosSecure.post('/parcels', data)
+                  .then(res => {
+                      console.log('after saving parcel', res.data);
+                   })
             }
         });
 
@@ -101,11 +104,11 @@ const sendParcel = () => {
                         <h4 className="text-2xl font-semibold">Sender Details</h4>
 
                         <label className="label">Sender Name</label>
-                        <input type="text" {...register('senderName')} 
+                        <input type="text" {...register('senderName')} defaultValue={user?.displayName}
                         className="input w-full" placeholder="Sender Name" />
 
                         <label className="label">Sender Email</label>
-                        <input type="text" {...register('senderEmail')}
+                        <input type="text" {...register('senderEmail')} defaultValue={user?.email}
                         className="input w-full" placeholder="Sender Email" />
 
                         {/* sender region */}
