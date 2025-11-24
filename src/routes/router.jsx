@@ -13,6 +13,7 @@ import MyParcels from "../Pages/DashBoard/MyParcels";
 import Payment from "../Pages/DashBoard/Payment";
 import PaymentSuccess from "../Pages/DashBoard/PaymentSuccess";
 import PaymentCancelled from "../Pages/DashBoard/PaymentCancelled";
+import PaymentHistory from "../Pages/DashBoard/PaymentHistory";
 
 const router = createBrowserRouter([
     {
@@ -25,7 +26,8 @@ const router = createBrowserRouter([
             },
             {
                 path: 'rider',
-                element: <PrivateRoute><Rider></Rider></PrivateRoute>
+                element: <PrivateRoute><Rider></Rider></PrivateRoute>,
+                loader: () => fetch('/serviceCenters.json').then(res => res.json())
             },
             {
                 path: 'send-parcel',
@@ -65,6 +67,11 @@ const router = createBrowserRouter([
             {
                 path: 'payment/:parcelId',
                 Component: Payment
+            }
+            ,
+            {
+                path: 'payment-history',
+                Component: PaymentHistory
             }
             ,
             {
